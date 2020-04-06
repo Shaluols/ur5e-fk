@@ -149,4 +149,50 @@ def forward(q):
     T[3, 3] = 1.0
     return T
 
+def HTM(i, theta):
+    """Calculate the HTM between two links.
+    Args:
+        i: A target index of joint value.
+        theta: A list of joint value solution. (unit: radian)
+    Returns:
+        An HTM of Link l w.r.t. Link l-1, where l = i + 1.
+    """
+    T_i = np.matrix(np.identity(4))
+
+    T_i[0, 0] = cos(theta[i])
+    T_i[0, 1] = -sin(theta[i])*cos(alpha[i])
+    T_i[0, 2] = sin(theta[i])*sin(alpha[i])
+    T_i[0, 3] = a[i]*cos(theta[i])
+    T_i[1, 0] = sin(theta[i])
+    T_i[1, 1] = cos(theta[i])*cos(alpha[i])
+    T_i[1, 2] = -cos(theta[i])*sin(alpha[i])
+    T_i[1, 3] = a[i]*sin(theta[i])
+    T_i[2, 0] = 0
+    T_i[2, 1] = sin(alpha[i])
+    T_i[2, 2] = cos(alpha[i])
+    T_i[2, 3] = d[i]
+    T_i[3, 0] = 0
+    T_i[3, 1] = 0
+    T_i[3, 2] = 0
+    T_i[3, 3] = 1
+
+    return T_i
+
+def fwd_kin(theta):
+    # The raw D-H parameters specify a transform from the 0th link to the 6th link
+    # To work with the raw D-H kinematics, we need to offset the transforms
+    # Transform from the base link to 0th link [[-1, 0, 0, 0], [0, -1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    # Transform from 6th link to end-effector [[0, -1, 0, 0], [0, 0, -1, 0], [1, 0, 0, 0], [0, 0, 0, 1]]
+    # The return result is from the base_link to end_effector
+    T_06 = np.matrix(np.identity(4))
+    # from base_link to 0th link offset transform
+    T_06 *= np.matrix([[-1, 0, 0, 0], [0, -1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]])
+
+    for i in range(6):
+        T_06 *= HTM(i, theta)
+    # from 6th link to end-effector offset transform
+    T_06 *= np.matrix([[0, -1, 0, 0], [0, 0, -1, 0], [1, 0, 0, 0], [0, 0, 0, 1]])
+
+    return T_06
+
 

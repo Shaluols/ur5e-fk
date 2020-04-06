@@ -4,10 +4,13 @@ from fk import *
 
 if __name__ == "__main__":
     # joints values in radian
-    q = [1.6094996624070816, -0.014978588575139895, -1.6244180820206449, -2.5102484798106426, -0.25636845564632615,
-         -1.5114861234682682]
+    q = [0, 0, 0, 0, 0, 0]
     # get 4*4 matrix of the end-effector pose
+    # this function only give you the final result of the Homogeneous matrix from base_link to end_efffector
+    # if you want to get intermediate result, you can use fwd_kin function
     np_T = forward(q)
+    # np_T = fwd_kin(q)
+    
     # transfer the format into ros msg type
     ros_T = matrix2ros(np_T)
     # transfer the format into x, y, z, euler angles type
