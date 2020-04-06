@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # if you want to get intermediate result, you can use fwd_kin function
     np_T = forward(q)
     # np_T = fwd_kin(q)
-    
+
     # transfer the format into ros msg type
     ros_T = matrix2ros(np_T)
     # transfer the format into x, y, z, euler angles type

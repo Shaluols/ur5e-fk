@@ -12,6 +12,9 @@ import tf.transformations as tf
 global mat
 
 # UR5e dh parameters
+# This can be find here:
+# https://www.universal-robots.com/how-tos-and-faqs/faq/ur-faq/parameters-for-calculations-of-kinematics-and-dynamics/
+# or in the ur_e_description package
 d1 =  0.163
 a2 = -0.425
 a3 = -0.392
